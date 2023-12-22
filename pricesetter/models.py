@@ -68,9 +68,13 @@ class Result(models.Model):
         return str(self.customer) + " " + str(self.sku) + "'s data"
 
     def calculate(self):
+        # step 1: clear previous data
+        self.data = {}
+
+        # step 1: calculate data based on current promotions
         pricings = Pricing.objects.filter(customer=self.customer, sku=self.sku)
         pricings_list = list(pricings)
-        promotions = Promotion.objects.filter(pricing__in=pricings_list)
+        promotions = Promotion.objects.filter(pricing__in=pricings_list).order_by("pk")
         promotions_list = list(promotions)
 
         for promotion in promotions_list:
